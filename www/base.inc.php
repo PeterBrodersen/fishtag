@@ -42,6 +42,10 @@ function htmlstart($title = "Lake Lucerne", $map = FALSE) {
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 EOD;
 	}
+	$unwritable = "";
+	if ( ! is_writable( "reports/" ) ) {
+		$unwritable = '<div class="error">Folder <code>reports/</code> is unwritable. Reports can not be created and saved. Please <code>chmod 777 reports</code> to make folder world writable.</div>';
+	}
 	$html = <<<EOD
 <!DOCTYPE html>
 <html>
@@ -64,6 +68,8 @@ $mapinclude
  - <a href="files.php">Files</a>
  - <a href="map.php">Map</a>
 </div>
+
+$unwritable
 
 <h1>$title</h1>
 
