@@ -1,4 +1,5 @@
 <?php
+// Insert the correct credentials and move this file to connect.inc.php
 define('DB_TYPE','mysqli');
 define('DB_USER','fish');
 define('DB_PASS','');
