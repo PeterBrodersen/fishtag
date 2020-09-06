@@ -1,4 +1,6 @@
 <?php
+require("setup.inc.php");
+
 // Lake Lucerne
 require("connect.inc.php");
 
