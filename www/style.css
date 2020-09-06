@@ -1,0 +1,36 @@
+h1, h2 {
+	font-family: Verdana, Tahoma, sans-serif;
+}
+
+div#menu {
+	border: 1px solid black;
+	background: #9cc;
+	font-family: Verdana, Tahoma, sans-serif;
+	margin-bottom: 10px;
+	padding: 3px;
+}
+
+.number {
+	text-align: right;
+}
+
+.symbol {
+	text-align: center;
+}
+
+.filetable {
+	border: 1px solid black;
+}
+
+.filetable td {
+	padding-right: 3px;
+}
+
+tr.deleted {
+	text-decoration: line-through;
+}
+
+.error {
+	font-weight: bold;
+	color: #c00;
+}
