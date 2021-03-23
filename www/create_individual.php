@@ -10,12 +10,20 @@ if ($debug) {
 }
 foreach($result AS $row) {
 	$pit_id = $row['original_pit_id'];
+	if ( ! isset($dataset[$pit_id]) )  {
+		$dataset[$pit_id] = [
+			'antenna' => [ 'latest_time' => FALSE, 'latest_date' => FALSE, 'latest_antenna_direction' => FALSE ],
+			'records' => [],
+			'passages' => [ 'total' => 0, 'unique_days' => 0 ]
+		];
+	}
+
 //	if ($debug) print "pit_id: " . $pit_id . PHP_EOL;
 	$datestring = $row['date'] . " " . $row['time'] . "." . $row['time_fraction'];
 	$current_time = new DateTime($datestring);
 	// :TODO: Should ignore test tag types of "R"
 	// Probably not a problem as tables are joined through fish table
-	$latest_antenna_direction = ($dataset[$pit_id]['antenna']['latest_antenna_direction'] ?? 0);
+	$latest_antenna_direction = ($dataset[$pit_id]['antenna']['latest_antenna_direction'] ?? FALSE);
 	$latest_time = ($dataset[$pit_id]['antenna']['latest_time'] ?? FALSE);
 	$latest_date = ($dataset[$pit_id]['antenna']['latest_date'] ?? FALSE);
 
@@ -32,7 +40,11 @@ foreach($result AS $row) {
 //		if ($debug) print "Antenna switch: From $latest_antenna to " . $row['antenna_local'] . "\n";
 		if ($latest_time) { // passage
 			$diff = $current_time->getTimestamp() - $latest_time->getTimestamp();
-			$dataset[$pit_id]['antenna']['total_time'][$latest_antenna_direction] += $diff;
+			if (isset($dataset[$pit_id]['antenna']['total_time'][$latest_antenna_direction]) ) {
+				$dataset[$pit_id]['antenna']['total_time'][$latest_antenna_direction] += $diff;
+			} else {
+				$dataset[$pit_id]['antenna']['total_time'][$latest_antenna_direction] = $diff;
+			}
 			$dataset[$pit_id]['passages']['total']++;
 			if ($latest_date != $row['date']) {
 				$dataset[$pit_id]['passages']['unique_days']++;
@@ -55,6 +67,12 @@ $fishcount = count($dataset);
 $timing['report'] = time();
 
 foreach($dataset AS $key => $row) { // add beginning and end times outside observation
+	if ( ! isset($dataset[$key]['antenna']['total_time']['Up']) ) {
+		$dataset[$key]['antenna']['total_time']['Up'] = 0;
+	}
+	if ( ! isset($dataset[$key]['antenna']['total_time']['Down']) ) {
+		$dataset[$key]['antenna']['total_time']['Down'] = 0;
+	}
 	if ($antenna_from) {
 		$startdate = new DateTime($antenna_from);
 		$first_record = new DateTime($row['records']['first_record']);
@@ -66,7 +84,6 @@ foreach($dataset AS $key => $row) { // add beginning and end times outside obser
 	}
 }
 
-//print dataToTable($result);
 print "<pre>";
 
 print "Possible fish: " . ($timing['sqlfish'] - $timing['start']) . " sec.\n";
@@ -86,10 +103,10 @@ foreach ($dataset AS $key => $row) {
 		'First record' => $row['records']['first_record'],
 		'Last record' => $row['records']['latest_record'],
 		'First antenna' => $row['antenna']['first_antenna'],
-		'Total days downstream' => (int) ($row['antenna']['total_time']['Down'] ?? 0) / 86400,
-		'Days with passage' => (int) ($row['passages']['unique_days'] ?? 0),
-		'Total passages' => (int) ($row['passages']['total'] ?? 0),
-		'End position' => ($row['antenna']['latest_antenna_direction'] ?? '')
+		'Total days downstream' => ((int) $row['antenna']['total_time']['Down']) / 86400,
+		'Days with passage' => (int) $row['passages']['unique_days'],
+		'Total passages' => (int) $row['passages']['total'],
+		'End position' => $row['antenna']['latest_antenna_direction']
 	];
 }
 

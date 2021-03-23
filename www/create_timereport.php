@@ -6,9 +6,7 @@ $dateinterval = 'PT' . $timestep . 'H';
 
 $count = 0;
 
-$dataset = [
-	0 => []
-];
+$dataset = [];
 
 if ($debug) {
 	print "<pre>Got " . count($result) . " rows</pre>";
@@ -45,7 +43,7 @@ foreach($result AS $row) {
 		}
 	}
 //	print_r($row);
-	$old_direction = ($dataset[$count]['direction'][$row['original_pit_id']] ?? 0);
+	$old_direction = ($dataset[$count]['direction'][$row['original_pit_id']] ?? FALSE);
 	$direction = getDirectionName($row['antenna_local']);
 	if ($direction != $old_direction) {
 		if ($old_direction) { // subtract one
@@ -68,7 +66,6 @@ foreach($dataset AS $key => $value) {
 
 $timing['report'] = time();
 
-//print dataToTable($result);
 print "<pre>";
 
 print "Possible fish: " . ($timing['sqlfish'] - $timing['start']) . " sec.\n";
