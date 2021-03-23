@@ -20,10 +20,11 @@ print "</form>\n\n";
 
 print '<table class="filetable">' . PHP_EOL;
 print '<thead><tr><th>ID</th><th>Filename</th><th>Import date</th><th>Antenna code</th><th>Observations</th><th>Imported?</th><th>Import note</th><th>Delete</th></tr></thead>' . PHP_EOL;
-
+print '<tbody>' . PHP_EOL;
 foreach($files AS $file) {
 	$location = ($file['location'] ? $file['location'] : "?");
-	print "<tr" . ($file['deleted'] == 1 ? " class=\"deleted\"" : "") .">";
+	$html_id = 'file_' . $file['id'];
+	print "<tr" . ($file['deleted'] == 1 ? " class=\"deleted\"" : "") ." id=\"" . $html_id . "\">";
 	print "<td class=\"number\">" . $file['id'] . "</td>";
 	print "<td>" . $file['filename'] . "</td>";
 	print "<td>" . $file['import_time'] . "</td>";
@@ -39,7 +40,7 @@ foreach($files AS $file) {
 	print "</tr>" . PHP_EOL;
 }
 
-print "</table>\n\n";
+print "</tbody></table>\n\n";
 
 
 print htmlend();

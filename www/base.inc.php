@@ -99,7 +99,7 @@ EOD;
 
 function dataToTable ($dataset) {
 	if (!$dataset) {
-		$html = '<b>Resultset is empty</b>';
+		$html = '<b>Result set is empty</b>';
 		return $html;
 	}
 	$html = "<table border='1' cellspacing='0' cellpadding='3'>" . PHP_EOL;

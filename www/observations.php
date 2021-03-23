@@ -10,7 +10,7 @@ if ($max >= 1 && $max <= 10000) {
 	$limit = $defaultlimit;
 }
 $data = $db->getall ("
-	SELECT a.id, a.pit_id, a.date, a.time, b.river, c.filename, d.name_english, e.location
+	SELECT a.id, a.file_id, a.pit_id, a.date, a.time, b.river, c.filename, d.name_english, e.location
 	FROM observations a
 	INNER JOIN fish b ON a.pit_id = b.pit_id
 	LEFT JOIN files c ON a.file_id = c.id
@@ -29,7 +29,9 @@ print '<tr><th>ID</th><th>pit_id</th><th>date</th><th>time</th><th>River</th><th
 foreach($data AS $row) {
 	print "<tr>";
 	foreach ($row AS $name => $field) {
-		if (!is_numeric($name) ){
+		if ($name === 'filename') {
+			print '<td><a href="files.php#file_' . $row['file_id'] . '">' . htmlspecialchars($field) . '</a></td>';
+		} elseif (!is_numeric($name) && $name != 'file_id' ){
 			print "<td>" . htmlspecialchars($field) . "</td>";
 		}
 	}
