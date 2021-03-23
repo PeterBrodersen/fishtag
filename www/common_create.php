@@ -8,25 +8,25 @@ $db->SetFetchMode(ADODB_FETCH_ASSOC);
 $timing = [];
 $timing['start'] = time();
 
-$antennas = (array) $_REQUEST['antenna_id'];
-$antenna_from = (string) $_REQUEST['antenna_from'];
-$antenna_to = (string) $_REQUEST['antenna_to'];
-$tagtime_from = (string) $_REQUEST['tagtime_from'];
-$tagtime_to = (string) $_REQUEST['tagtime_to'];
-$species_id = (array) $_REQUEST['species_id'];
-$species_size_min = (float) $_REQUEST['species_size_min'];
-$species_size_max = (float) $_REQUEST['species_size_max'];
+$antennas = (array) ($_REQUEST['antenna_id'] ?? []);
+$antenna_from = (string) ($_REQUEST['antenna_from'] ?? '');
+$antenna_to = (string) ($_REQUEST['antenna_to'] ?? '');
+$tagtime_from = (string) ($_REQUEST['tagtime_from'] ?? '');
+$tagtime_to = (string) ($_REQUEST['tagtime_to'] ?? '');
+$species_id = (array) ($_REQUEST['species_id'] ?? []);
+$species_size_min = (float) ($_REQUEST['species_size_min'] ?? 0);
+$species_size_max = (float) ($_REQUEST['species_size_max'] ?? 0);
 
-$fish_origins = (array) $_REQUEST['fish_origins'];
-$hatcheries = (array) $_REQUEST['hatcheries'];
-$parental_origins = (array) $_REQUEST['parental_origins'];
+$fish_origins = (array) ($_REQUEST['fish_origins'] ?? []);
+$hatcheries = (array) ($_REQUEST['hatcheries'] ?? []);
+$parental_origins = (array) ($_REQUEST['parental_origins'] ?? []);
 
-$rivers = (array) $_REQUEST['rivers'];
-$sections = (array) $_REQUEST['sections'];
+$rivers = (array) ($_REQUEST['rivers'] ?? []);
+$sections = (array) ($_REQUEST['sections'] ?? []);
 
-$timestep = (int) $_REQUEST['timestep'];
+$timestep = (int) ($_REQUEST['timestep'] ?? 0);
 
-$debug = $_REQUEST['debug'];
+$debug = isset($_REQUEST['debug']);
 
 if ($debug) {
 	$db->debug = true;

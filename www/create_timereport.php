@@ -6,7 +6,9 @@ $dateinterval = 'PT' . $timestep . 'H';
 
 $count = 0;
 
-$dataset = [];
+$dataset = [
+	0 => []
+];
 
 if ($debug) {
 	print "<pre>Got " . count($result) . " rows</pre>";
@@ -15,7 +17,7 @@ if ($debug) {
 foreach($result AS $row) {
 	$datestring = $row['date'] . " " . $row['time'] . "." . $row['time_fraction'];
 	$date = new DateTime($datestring);
-	if (!$timelimit) { // initialize
+	if (! isset($timelimit) ) { // initialize
 		$timelimit = new DateTime($datestring);
 		$timelimit->modify('today'); // set start row to 00:00:00
 		$dataset[$count] = [
@@ -43,7 +45,7 @@ foreach($result AS $row) {
 		}
 	}
 //	print_r($row);
-	$old_direction = $dataset[$count]['direction'][$row['original_pit_id']];
+	$old_direction = ($dataset[$count]['direction'][$row['original_pit_id']] ?? 0);
 	$direction = getDirectionName($row['antenna_local']);
 	if ($direction != $old_direction) {
 		if ($old_direction) { // subtract one
@@ -56,7 +58,7 @@ foreach($result AS $row) {
 }
 
 // add fish
-$fishcount = count($dataset[$count]['direction']);
+$fishcount = isset($dataset[$count]) ? count($dataset[$count]['direction']) : 0;
 
 foreach($dataset AS $key => $value) {
 	$dataset[$key]['Up %'] = round($dataset[$key]['Up'] / $fishpossible * 100, 1);
@@ -76,7 +78,7 @@ print "Fish in result: " . $fishcount . "\n";
 print "Possible fish: " . $fishpossible . "\n";
 print "</pre>";
 
-$filename = $folder['reports'] . "timereport_" . date("Ymd_His") . ".csv";
+$filename = $folders['reports'] . "timereport_" . date("Ymd_His") . ".csv";
 $csvdata = dataToCsv($dataset, ",");
 file_put_contents($filename, $csvdata);
 print '<p><a href="' . $filename . '">[Download]</a></p>' . PHP_EOL;

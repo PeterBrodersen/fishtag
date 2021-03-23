@@ -15,11 +15,11 @@ foreach($result AS $row) {
 	$current_time = new DateTime($datestring);
 	// :TODO: Should ignore test tag types of "R"
 	// Probably not a problem as tables are joined through fish table
-	$latest_antenna_direction = $dataset[$pit_id]['antenna']['latest_antenna_direction'];
-	$latest_time = $dataset[$pit_id]['antenna']['latest_time'];
-	$latest_date = $dataset[$pit_id]['antenna']['latest_date'];
+	$latest_antenna_direction = ($dataset[$pit_id]['antenna']['latest_antenna_direction'] ?? 0);
+	$latest_time = ($dataset[$pit_id]['antenna']['latest_time'] ?? FALSE);
+	$latest_date = ($dataset[$pit_id]['antenna']['latest_date'] ?? FALSE);
 
-	if (!$dataset[$pit_id]['records']['first_record']) {
+	if ( ! isset($dataset[$pit_id]['records']['first_record']) ) {
 		$dataset[$pit_id]['records']['first_record'] = $datestring;
 		$dataset[$pit_id]['antenna']['first_antenna_direction'] = getDirectionName($row['antenna_local']);
 		$dataset[$pit_id]['antenna']['first_antenna'] = $row['antenna_local'];
@@ -86,14 +86,14 @@ foreach ($dataset AS $key => $row) {
 		'First record' => $row['records']['first_record'],
 		'Last record' => $row['records']['latest_record'],
 		'First antenna' => $row['antenna']['first_antenna'],
-		'Total days downstream' => ((int) $row['antenna']['total_time']['Down']) / 86400,
-		'Days with passage' => (int) $row['passages']['unique_days'],
-		'Total passages' => (int) $row['passages']['total'],
-		'End position' => $row['antenna']['latest_antenna_direction']
+		'Total days downstream' => (int) ($row['antenna']['total_time']['Down'] ?? 0) / 86400,
+		'Days with passage' => (int) ($row['passages']['unique_days'] ?? 0),
+		'Total passages' => (int) ($row['passages']['total'] ?? 0),
+		'End position' => ($row['antenna']['latest_antenna_direction'] ?? '')
 	];
 }
 
-$filename = $folder['reports'] . "individual_" . date("Ymd_His") . ".csv";
+$filename = $folders['reports'] . "individual_" . date("Ymd_His") . ".csv";
 $csvdata = dataToCsv($resultset, ",");
 file_put_contents($filename, $csvdata);
 print '<p><a href="' . $filename . '">[Download]</a></p>' . PHP_EOL;
