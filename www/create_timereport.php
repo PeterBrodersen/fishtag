@@ -76,7 +76,7 @@ print "Fish in result: " . $fishcount . "\n";
 print "Possible fish: " . $fishpossible . "\n";
 print "</pre>";
 
-$filename = "reports/timereport_" . date("Ymd_His") . ".csv";
+$filename = $folder['reports'] . "timereport_" . date("Ymd_His") . ".csv";
 $csvdata = dataToCsv($dataset, ",");
 file_put_contents($filename, $csvdata);
 print '<p><a href="' . $filename . '">[Download]</a></p>' . PHP_EOL;

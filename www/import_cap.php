@@ -1,8 +1,9 @@
 <?php
 require("connect.inc.php");
+require("base.inc.php");
 $db->debug = true;
 
-$upload_path = "../data/imported/";
+$upload_path = $folders['cap_upload_path'];
 $action = $_REQUEST['action'];
 $file_id = (int) $_REQUEST['file_id'];
 

@@ -4,6 +4,11 @@ require("setup.inc.php");
 // Lake Lucerne
 require("connect.inc.php");
 
+$folders = [
+	'reports' => 'reports/',
+	'cap_upload_path' => '../data/imported/'
+];
+
 // Fish logic
 function getDirectionName($antenna) {
 	$direction = [
@@ -34,6 +39,7 @@ function dbquote($string) {
 
 // HTML logic
 function htmlstart($title = "Lake Lucerne", $map = FALSE) {
+	global $folders;
 	$mapinclude = "";
 	if ($map) {
 		$mapinclude = <<<EOD
@@ -43,8 +49,10 @@ function htmlstart($title = "Lake Lucerne", $map = FALSE) {
 EOD;
 	}
 	$unwritable = "";
-	if ( ! is_writable( "reports/" ) ) {
-		$unwritable = '<div class="error">Folder <code>reports/</code> is unwritable. Reports can not be created and saved. Please <code>chmod 777 reports</code> to make folder world writable.</div>';
+	foreach ($folders AS $folder) {
+		if ( ! is_writable( $folder) ) {
+			$unwritable .= '<div class="error">Folder <code>' . $folder . '</code> is unwritable. Reports can not be created and saved. Please <code>chmod 777 ' . $folder . '</code> to make folder world writable.</div>';
+		}
 	}
 	$html = <<<EOD
 <!DOCTYPE html>

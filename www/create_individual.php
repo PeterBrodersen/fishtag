@@ -93,7 +93,7 @@ foreach ($dataset AS $key => $row) {
 	];
 }
 
-$filename = "reports/individual_" . date("Ymd_His") . ".csv";
+$filename = $folder['reports'] . "individual_" . date("Ymd_His") . ".csv";
 $csvdata = dataToCsv($resultset, ",");
 file_put_contents($filename, $csvdata);
 print '<p><a href="' . $filename . '">[Download]</a></p>' . PHP_EOL;
