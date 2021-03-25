@@ -125,6 +125,7 @@ $timing['sqlfish'] = time();
 // observations query
 // :TODO: Do not select *
 
+# apparently unused
 if ($use_timestep) { // timereport
 	$fields = "original_pit_id";
 } else { // individual
