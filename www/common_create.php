@@ -133,7 +133,7 @@ if ($use_timestep) { // timereport
 }
 
 $query = "
-	SELECT original_pit_id, antenna_local, date, time, time_fraction FROM observations
+	SELECT observations.original_pit_id, antenna_local, date, time, time_fraction FROM observations
 	INNER JOIN antennas ON observations.site_code = antennas.code
 	INNER JOIN fish ON observations.pit_id = fish.pit_id
 	INNER JOIN species ON fish.species_code = species.code
