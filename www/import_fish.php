@@ -16,12 +16,16 @@ if (($fp = fopen($file, "r")) === FALSE) {
 }
 $dummy = fgetcsv($fp, 1000, $separator); // :TODO: Check column names and match them to corresponding fields in database instead of assuming position
 
-$db->query("CREATE TABLE IF NOT EXISTS tmp_fish LIKE fish");
+$db->query("DROP TABLE IF EXISTS tmp_fish");
+$db->query("CREATE TABLE tmp_fish LIKE fish");
 $db->query("TRUNCATE TABLE tmp_fish");
 
 $count = 0;
 while (($data = fgetcsv($fp, 1000, $separator)) !== FALSE) {
-	array_shift($data); // remove new field "Date caught" in the beginning of the sheet
+	// Remove extra columns
+	unset($data[0]); // Date caught
+	unset($data[12]); // weight after (g)
+	$data = array_values($data);
 	$count++;
 	if ($count % 1000 === 0) {
 		print $count . " rows" . PHP_EOL;
@@ -62,9 +66,10 @@ while (($data = fgetcsv($fp, 1000, $separator)) !== FALSE) {
 	if ($error) {
 		print "Row $count: " . $error . PHP_EOL;
 	}
-	
 }
+print "Moving tables" . PHP_EOL;
 $db->query("DROP TABLE IF EXISTS old_fish");
 $db->query("RENAME TABLE fish TO old_fish, tmp_fish to fish");
+print "Done!" . PHP_EOL;
 ?>
 
