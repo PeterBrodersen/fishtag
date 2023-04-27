@@ -1,5 +1,5 @@
 <?php
-//die("Safety valve. Exiting!" . PHP_EOL);
+die("Safety valve. Exiting!" . PHP_EOL);
 
 # 2017 july : data should be utf-8
 # some pit ids are too long? 7 characters
@@ -21,6 +21,7 @@ $db->query("TRUNCATE TABLE tmp_fish");
 
 $count = 0;
 while (($data = fgetcsv($fp, 1000, $separator)) !== FALSE) {
+	array_shift($data); // remove new field "Date caught" in the beginning of the sheet
 	$count++;
 	if ($count % 1000 === 0) {
 		print $count . " rows" . PHP_EOL;
@@ -28,8 +29,10 @@ while (($data = fgetcsv($fp, 1000, $separator)) !== FALSE) {
 # :TODO: This should auto-check the format. mm/dd/yyyy or dd-mm-yyyy
 /*
 	list($day,$month,$year) = explode(".", $data[0]);
-*/
 	list($month,$day,$year) = explode("/", $data[0]);
+*/
+	list($day,$month,$year) = explode("/", $data[0]);
+
 	$ymd = sprintf("%04d-%02d-%02d", $year, $month, $day);
 	$river = $data[4];
 	$section = $data[5];
@@ -49,11 +52,11 @@ while (($data = fgetcsv($fp, 1000, $separator)) !== FALSE) {
 	$recapture = $data[23];
 	$laketrout = $data[24];
 	$original_site_name = $data[25];
-	if ($fishec == "" || $fishec == "-") $fishec = NULL;
-	if ($sl == "" || $sl == "-") $sl = NULL;
-	if ($tl == "" || $tl == "-") $tl = NULL;
-	if ($weight == "" || $weight == "-") $weight = NULL;
-	#	print $pit . PHP_EOL;
+	if ($ymd == '0000-00-00') $ymd = NULL;
+	if (!is_numeric($fishec) ) $fishec = NULL;
+	if (!is_numeric($sl) ) $sl = NULL;
+	if (!is_numeric($tl) ) $tl = NULL;
+	if (!is_numeric($weight) ) $weight = NULL;
 	$db->query("INSERT INTO tmp_fish (capture_date, river, section, fishec, species_code, standard_length, total_length, weight, pit_id, original_pit_id, comments, fish_origin, hatchery, parental_origin, sex, ripeness, recapture, laketrout, original_site_name) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [ $ymd, $river, $section, $fishec, $species, $sl, $tl, $weight, $pit_id, $original_pit_id, $comments, $fish_origin, $hatchery, $parental_origin, $sex, $ripeness, $recapture, $laketrout, $original_site_name ] );
 	$error = $db->errorMsg();
 	if ($error) {
