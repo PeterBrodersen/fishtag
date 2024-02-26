@@ -23,8 +23,8 @@ $db->query("TRUNCATE TABLE tmp_fish");
 $count = 0;
 while (($data = fgetcsv($fp, 1000, $separator)) !== FALSE) {
 	// Remove extra columns
-	unset($data[0]); // Date caught
-	unset($data[12]); // weight after (g)
+//	unset($data[0]); // Date caught
+//	unset($data[12]); // weight after (g)
 	$data = array_values($data);
 	$count++;
 	if ($count % 1000 === 0) {
